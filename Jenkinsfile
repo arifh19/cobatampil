@@ -15,7 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", retrunStdout: true)
+                    CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     buildDocker = docker.build("arifh19/cobatampil:${CommitHash}")
                 }
             }
