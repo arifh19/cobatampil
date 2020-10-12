@@ -79,7 +79,8 @@ pipeline {
                                         sshTransfer(
                                             sourceFiles: "docker-compose.yml",
                                             remoteDirectory: "restaurant",
-                                            execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
+                                            // execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
+                                            execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker-compose up -d",
                                             execTimeout: 120000,
                                         ),
                                     ]
