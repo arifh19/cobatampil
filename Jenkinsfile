@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         booleanParam(name: 'RunTest', defaultValue: true, description: 'Toggle this value for testing')
-        choice(name: 'CI/CD', choices: ['CI', 'CICD'], description: 'Pick something')
+        choice(name: 'CICD', choices: ['CI', 'CICD'], description: 'Pick something')
     }
     stages {
         stage('Build project') {
