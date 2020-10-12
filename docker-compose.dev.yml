@@ -1,0 +1,63 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:latest
+    networks:
+      - restaurant-network
+    volumes:
+      - ./postgresql/pgdata:/var/lib/postgresql/data
+      - ./postgresql/data:/data
+    environment:
+      POSTGRES_PASSWORD: 1sampai9
+      POSTGRES_USER: arifh19
+      POSTGRES_DB: restaurant
+
+  redis:
+    image: arifh19/redis-restaurant
+    networks:
+      - restaurant-network
+    volumes:
+      - ./redis:/data
+
+  backend:
+    image: arifh19/restaurant-backend
+    networks:
+      - restaurant-network
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend/logfile:/backend/logfile
+    deploy:
+      mode: replicated
+      replicas: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: 50M
+    environment:
+      - JWT_KEYS={=AUx857wf^p!fp>+Nx5KK-.xucu7p
+      - DB_HOST=db
+      - DB_USER=arifh19
+      - DB_PASSWORD=1sampai9
+      - DB_NAME=restaurant
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=1sampai9
+  
+  frontend:
+    image: arifh19/restaurant-frontend
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - ./frontend/public:/dist/public
+    networks:
+      - restaurant-network
+    depends_on:
+      - backend
+    environment:
+      - VUE_APP_URL=http://54.175.22.50/api
+      - VUE_APP_STATIC_URL:http://54.175.22.50/api/public/upload/
+
+networks:
+  restaurant-network:
