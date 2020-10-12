@@ -29,7 +29,6 @@ pipeline {
             steps {
                 script {
                     // CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                    sh ("docker rmi arifh19/cobatampil:${GIT_BRANCH}", returnStdout: false)
                     buildDocker = docker.build("arifh19/cobatampil:${GIT_BRANCH}")
                 }
             }
