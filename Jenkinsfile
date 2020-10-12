@@ -32,6 +32,7 @@ pipeline {
                         sh 'echo passed'
                     }
                 }
+                echo params.CICD
             }
         }
         stage('Deploy') {
