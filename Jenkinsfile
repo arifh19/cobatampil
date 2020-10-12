@@ -30,6 +30,7 @@ pipeline {
                 script {
                     // CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     buildDocker = docker.build("arifh19/cobatampil:${GIT_BRANCH}")
+                    sh ('docker rmi $(docker images | grep "<none>") | awk '{print $3}') 2>/dev/null || echo "No untagged images to delete."')
                 }
             }
         }
@@ -80,7 +81,7 @@ pipeline {
                                             sourceFiles: "docker-compose.yml",
                                             remoteDirectory: "restaurant",
                                             // execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
-                                            execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker-compose up -d",
+                                            execCommand: "docker-compose -f restaurant/docker-compose.yml stop; docker rmi $(docker images | grep 'arifh19/' | awk '{print $3}') 2>/dev/null || echo 'No untagged images to delete.'; docker-compose up -f restaurant/docker-compose.yml -d",
                                             execTimeout: 120000,
                                         ),
                                     ]
