@@ -1,5 +1,5 @@
 # cobatampil
-Tes
+
 ## Project setup
 ```
 yarn install
