@@ -52,7 +52,7 @@ pipeline {
         stage('Deploy') {
             when {
                 expression {
-                    params.CICD == 'CICD'
+                    BRANCH_NAME == 'master'
                 }
             }
             steps {
