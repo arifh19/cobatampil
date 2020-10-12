@@ -32,7 +32,18 @@ pipeline {
                         sh 'echo passed'
                     }
                 }
-                echo params.CICD
+            }
+        }
+        stage('Push Image') {
+            when {
+                expression {
+                    params.RunTest
+                }
+            }
+            steps {
+                script {
+                    buildDocker.push("${env.GIT_BRANCH}")
+                }
             }
         }
         stage('Deploy') {
