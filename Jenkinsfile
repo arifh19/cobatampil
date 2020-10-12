@@ -28,8 +28,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                    buildDocker = docker.build("arifh19/cobatampil:${CommitHash}")
+                    // CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                    buildDocker = docker.build("arifh19/cobatampil:${BUILD_NUMBER}")
                 }
             }
         }
@@ -41,7 +41,13 @@ pipeline {
             }
             steps {
                 script {
-                    buildDocker.push("${env.GIT_BRANCH}")
+                    if (BRANCH_NAME == 'master') {
+                        buildDocker.push("latest")
+                    }else {
+                        buildDocker.push("${GIT_BRANCH}")
+                    }
+
+                    
                 }
             }
         }
@@ -56,7 +62,7 @@ pipeline {
                                     verbose: false,
                                     transfers: [
                                         sshTransfer(
-                                            execCommand: "docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
+                                            execCommand: "docker pull arifh19/cobatampil:latest; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:latest",
                                             execTimeout: 120000,
                                         )
                                     ]
@@ -71,7 +77,7 @@ pipeline {
                                     verbose: false,
                                     transfers: [
                                         sshTransfer(
-                                            execCommand: "docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
+                                            execCommand: "docker rmi arifh19/cobatampil:${env.GIT_BRANCH}; docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
                                             execTimeout: 120000,
                                         )
                                     ]
