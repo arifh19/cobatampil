@@ -1,3 +1,6 @@
+def builderDocker
+def CommitHash
+
 pipeline {
     agent any
     parameters {
@@ -53,7 +56,22 @@ pipeline {
                 }
             }
             steps {
-                echo 'Deploy...'
+                script {
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'development',
+                                verbose: false,
+                                transfers: [
+                                    sshTransfer(
+                                        execCommand: "docker pull arifh19/cobatampil:${env.GIT_BRANCH}; docker kill cobatampil; docker run -d --rm --name cobatampil -p 80:80 arifh19/cobatampil:${env.GIT_BRANCH}",
+                                        execTimeout: 120000,
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
             }
         }
     }
