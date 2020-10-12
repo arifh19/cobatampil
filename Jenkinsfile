@@ -30,7 +30,7 @@ pipeline {
                 script {
                     // CommitHash = sh (script : "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     buildDocker = docker.build("arifh19/cobatampil:${GIT_BRANCH}")
-                    sh ('docker rmi $(docker images | grep "<none>" | awk "{print $3}")')
+                    sh ('docker rmi -f $(docker images | grep "<none>" | awk "{print $3}")')
                 }
             }
         }
